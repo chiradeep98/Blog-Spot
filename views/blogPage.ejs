@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head.ejs') %>
+    <title>Blog: <%= blog.title %></title>
+    <style>
+        body {
+            background: #f3f4f6;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .hero {
+            position: relative;
+            background-image: url('<%= blog.coverImageUrl %>');
+            background-size: cover;
+            background-position: center;
+            height: 350px;
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        .hero-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+        }
+
+        .blog-content {
+            background: white;
+            margin-top: -60px;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .blog-body {
+            white-space: pre-wrap;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .author-info {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-info img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border: 2px solid #dee2e6;
+        }
+
+        .comment-form textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .comment-box {
+            background: white;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .comment-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .comment-user img {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #dee2e6;
+        }
+
+        .comment-content {
+            margin-top: 0.5rem;
+            white-space: pre-wrap;
+            background-color: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <!-- Hero Banner -->
+    <div class="hero">
+        <div class="hero-overlay">
+            <h1><%= blog.title %></h1>
+        </div>
+    </div>
+
+    <!-- Blog Content Card -->
+    <div class="container">
+        <div class="blog-content mt-5">
+            <div class="blog-body">
+                <%= blog.body %>
+            </div>
+
+            <div class="author-info mt-5">
+                <img src="<%= blog.createdBy.profileImageUrl %>" alt="Author Image">
+                <div>
+                    <h6 class="mb-0 fw-bold"><%= blog.createdBy.fullname %></h6>
+                    <small class="text-muted">Author</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Section -->
+    <% if (locals.user) { %>
+        <div class="container mt-5">
+            <form action="/blog/comment/<%= blog._id %>" method="post" class="comment-form">
+                <h3 class="fw-semibold mb-3">Leave a Comment</h3>
+                <div class="mb-3">
+                    <textarea name="content" class="form-control" placeholder="Write your comment here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary px-4">Post Comment</button>
+            </form>
+        </div>
+    <% } %>
+
+    <div class="container mt-5 mb-5">
+        <h4 class="fw-semibold mb-4">Comments (<%= allComments.length %>)</h4>
+        <% allComments.forEach(comment => { %>
+            <div class="comment-box">
+                <div class="comment-user">
+                    <img src="<%= comment.createdBy.profileImageUrl %>" alt="User Image">
+                    <strong><%= comment.createdBy.fullname %></strong>
+                </div>
+                <div class="comment-content mt-2">
+                    <%= comment.content %>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <%- include('./partials/script.ejs') %>
+</body>
+
+</html>
